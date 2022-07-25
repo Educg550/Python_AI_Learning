@@ -91,19 +91,29 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
-    currentNode = Node(source, None, None)
     queueFrontier = QueueFrontier()
-    queueFrontier.add(currentNode)
-    exploredSet = set()
+    queueFrontier.add(Node(source, None, None))
+    exploredList = list()
     path = list()
 
-    while queueFrontier:
-        queueFrontier.remove()
-        if queueFrontier.contains_state(target): # Found the node
-            return path
-        # for n in neighbors_for_person(queueFrontier.state):
+    while queueFrontier.frontier:
+        currentNode = Node(queueFrontier.frontier[0], None, None)
+        if currentNode.state == target: # Found the node
+            while currentNode.parent:
+                dupla = (currentNode.action, currentNode.state)
+                path.prepend(dupla)
 
-        exploredSet.append(queueFrontier.state)
+            return path
+        if queueFrontier.frontier[0] not in exploredList:
+            neighbors = neighbors_for_person(queueFrontier[0])
+            if not currentNode.parent:
+                currentNode.action = n[0]
+            for n in neighbors:
+                # Creates new node and appends it to the queue
+                queueFrontier.add(Node(n[1], currentNode.state, n[0]))
+        exploredList.append(queueFrontier.frontier[0])
+        queueFrontier.frontier.pop(0)
+    return None
 
     raise NotImplementedError
 
